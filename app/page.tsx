@@ -1,7 +1,13 @@
 'use client'
 
 import Image from 'next/image'
-import { FaInstagram, FaBlogger, FaRegNewspaper, FaExchangeAlt, FaUsers } from 'react-icons/fa'
+import {
+  FaInstagram,
+  FaBlogger,
+  FaRegNewspaper,
+  FaExchangeAlt,
+  FaUsers,
+} from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 
 export default function Home() {
@@ -33,8 +39,12 @@ export default function Home() {
             <a href="#about">소개</a>
           </nav>
           <div className="auth-buttons">
-            <a href="/login" className="btn btn-secondary">로그인</a>
-            <a href="/signup" className="btn btn-primary">회원가입</a>
+            <a href="/login" className="btn btn-secondary">
+              로그인
+            </a>
+            <a href="/signup" className="btn btn-primary">
+              회원가입
+            </a>
           </div>
         </div>
       </header>
@@ -124,8 +134,9 @@ export default function Home() {
               </form>
             </div>
             <div className="footer-social">
-              <a href="#" aria-label="Instagram"><FaInstagram /></a>
-              <a href="#" aria-label="Blog"><FaBlogger /></a>
+              <a href="#" aria-label="Instagram">
+                <FaInstagram />
+              </a>
             </div>
           </div>
           <div className="footer-legal">
@@ -138,5 +149,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
