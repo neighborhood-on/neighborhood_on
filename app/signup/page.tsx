@@ -1,94 +1,106 @@
-"use client";
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
-export default function SignUp() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const router = useRouter();
+export default function SignupPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    location: '',
+  })
+  const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (!name || !email || !password) {
-      setError('모든 필드를 채워주세요.');
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (res.ok) {
-        router.push('/login');
-      } else {
-        const data = await res.json();
-        setError(data.message || '회원가입에 실패했습니다.');
-      }
-    } catch (err) {
-      setError('네트워크 오류가 발생했습니다.');
-    }
-  };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    alert(`회원가입 시도: ${formData.name}`)
+  }
 
   return (
     <div className="auth-container">
-      <div 
-        className="auth-promo-section"
-        style={{ backgroundImage: `url(/커뮤니티.jpg)` }}
-      >
-        <h1>함께하는 동네,<br />따뜻한 순간들.</h1>
-        <p>동네ON에 오신 것을 환영합니다. 이웃과 함께하는 새로운 일상을 경험해보세요.</p>
+      <div className="background-layer">
+        <Image
+          src="/map-bg.jpg"
+          alt="배경 지도"
+          fill
+          style={{ objectFit: 'cover' }}
+        />
+        <div
+          className="overlay"
+          style={{ background: 'rgba(0, 0, 0, 0.5)' }}
+        ></div>
       </div>
-      <div className="auth-form-section">
-        <div className="auth-form-wrapper">
-          <h2>회원가입</h2>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">이름</label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="email">이메일</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">비밀번호</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-            <button
-              type="submit"
-              className="btn btn-primary btn-submit"
-            >
-              회원가입
-            </button>
-          </form>
+
+      <div className="auth-card" style={{ maxWidth: '500px' }}>
+        <div className="auth-header">
+          <Link href="/">
+            <Image
+              src="/logo.png"
+              alt="동네 ON"
+              width={100}
+              height={35}
+              style={{
+                margin: '0 auto 20px',
+                display: 'block',
+                width: 'auto',
+                height: 'auto',
+              }}
+            />
+          </Link>
+          <h1>환영합니다! 🎉</h1>
+          <p>동네 이웃들과 따뜻한 소통을 시작해보세요.</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="input-group">
+            <input
+              type="text"
+              placeholder="이름 (닉네임)"
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+            />
+          </div>
+          <div className="input-group">
+            <input
+              type="text"
+              placeholder="거주 동네 (예: 강남구 역삼동)"
+              onChange={(e) =>
+                setFormData({ ...formData, location: e.target.value })
+              }
+            />
+          </div>
+          <div className="input-group">
+            <input
+              type="email"
+              placeholder="이메일 주소"
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+            />
+          </div>
+          <div className="input-group">
+            <input
+              type="password"
+              placeholder="비밀번호 (6자리 이상)"
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+            />
+          </div>
+          <button type="submit" className="btn-submit">
+            동네 ON 시작하기
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          이미 계정이 있으신가요?
+          <Link href="/login">로그인하기</Link>
         </div>
       </div>
     </div>
-  );
+  )
 }

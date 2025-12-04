@@ -7,19 +7,16 @@ export async function POST(request: Request) {
     const { name, email, password } = await request.json();
 
     const client = await clientPromise;
-    const db = client.db('neighborhood_on'); // Use your database name
+    const db = client.db('neighborhood_on');
     const usersCollection = db.collection('users');
 
-    // Check if user already exists
     const existingUser = await usersCollection.findOne({ email });
     if (existingUser) {
       return NextResponse.json({ message: '이미 존재하는 이메일입니다.' }, { status: 409 });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
     await usersCollection.insertOne({
       name,
       email,
