@@ -166,24 +166,6 @@ export default function Home() {
 
       <footer className="footer">
         <div className="section-content">
-          <div className="footer-main">
-            <div className="footer-about">
-              <h4>동네 ON</h4>
-              <p>가장 가까운 이웃과 연결되는 곳</p>
-            </div>
-            <div className="footer-newsletter">
-              <h4>새로운 소식을 받아보세요</h4>
-              <form className="newsletter-form">
-                <input type="email" placeholder="이메일 주소" />
-                <button type="submit">구독</button>
-              </form>
-            </div>
-            <div className="footer-social">
-              <a href="#" aria-label="Instagram">
-                <FaInstagram />
-              </a>
-            </div>
-          </div>
           <div className="footer-legal">
             <p>&copy; 2025 동네 ON. All rights reserved.</p>
             <div>
