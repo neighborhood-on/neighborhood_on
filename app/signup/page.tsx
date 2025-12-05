@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -14,9 +15,30 @@ export default function SignupPage() {
   })
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    alert(`회원가입 시도: ${formData.name}`)
+
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      if (res.ok) {
+        alert('회원가입 성공! 로그인 페이지로 이동합니다.')
+        router.push('/login')
+      } else {
+        const errorData = await res.json()
+        alert(`회원가입 실패: ${errorData.message}`)
+      }
+    } catch (error) {
+      alert('회원가입 중 오류가 발생했습니다.')
+    }
+  }
+
+  const handleSocialLogin = (provider: string) => {
+    signIn(provider, { callbackUrl: '/' })
   }
 
   return (
@@ -96,11 +118,86 @@ export default function SignupPage() {
           </button>
         </form>
 
+        <div className="social-login-section">
+          <div className="divider">
+            <span>또는 소셜 계정으로 시작하기</span>
+          </div>
+          <div className="social-buttons">
+            <button
+              className="btn-social btn-google"
+              onClick={() => handleSocialLogin('google')}
+            >
+              <span className="social-icon">G</span>
+              구글로 시작하기
+            </button>
+            <button
+              className="btn-social btn-kakao"
+              onClick={() => handleSocialLogin('kakao')}
+            >
+              <span className="social-icon">K</span>
+              카카오로 시작하기
+            </button>
+          </div>
+        </div>
+
         <div className="auth-footer">
           이미 계정이 있으신가요?
           <Link href="/login">로그인하기</Link>
         </div>
       </div>
+      <style jsx>{`
+        .social-login-section {
+          margin-top: 30px;
+        }
+        .divider {
+          display: flex;
+          align-items: center;
+          text-align: center;
+          color: #888;
+          font-size: 14px;
+          margin-bottom: 20px;
+        }
+        .divider::before,
+        .divider::after {
+          content: '';
+          flex: 1;
+          border-bottom: 1px solid #ddd;
+        }
+        .divider span {
+          padding: 0 10px;
+        }
+        .social-buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .btn-social {
+          width: 100%;
+          padding: 12px;
+          border-radius: 10px;
+          border: none;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          transition: transform 0.2s;
+        }
+        .btn-social:hover {
+          transform: translateY(-2px);
+        }
+        .btn-google {
+          background-color: #fff;
+          color: #333;
+          border: 1px solid #ddd;
+        }
+        .btn-kakao {
+          background-color: #fee500;
+          color: #3c1e1e;
+        }
+      `}</style>
     </div>
   )
 }
