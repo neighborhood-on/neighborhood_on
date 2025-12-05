@@ -82,7 +82,7 @@ export default function Home() {
               }}
             >
               <Link
-                href="/board"
+                href="/map"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -103,7 +103,7 @@ export default function Home() {
                   cursor: 'pointer',
                 }}
               >
-                게시판으로 바로가기
+                지역 이동하기
               </Link>
             </div>
           </div>
