@@ -943,7 +943,7 @@ const MapPage = () => {
             고양시 인터랙티브 맵
           </p>
           <h1 className="mt-2 text-3xl font-black text-slate-900 md:text-4xl">
-            현재 위치의 주변 사람들과 일상을 공유해보세요
+            현재 위치의 주변 사람들과 일상을 공유해보세요!
           </h1>
           <p className="mt-3 text-base text-slate-600">
             원하는 지역을 선택하면 해당 게시판으로 이동합니다.
