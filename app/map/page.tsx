@@ -854,7 +854,7 @@ const MapPage = () => {
               onClick={() => setSelectedDistrict(district)}
               className="w-full rounded-2xl border border-slate-200 p-4 text-left transition hover:border-slate-400"
             >
-              <p className="text-sm uppercase text-slate-400">구 선택</p>
+              <p className="text-sm uppercase text-slate-400"></p>
               <p className="text-xl font-bold text-slate-900">
                 {district.name}
               </p>
@@ -882,7 +882,7 @@ const MapPage = () => {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs uppercase text-slate-400">행정동</p>
+                <p className="text-xs uppercase text-slate-400"></p>
                 <p className="text-lg font-semibold text-slate-900">
                   {neighborhood.name}
                 </p>
@@ -898,9 +898,7 @@ const MapPage = () => {
                 }}
               />
             </div>
-            <p className="mt-3 text-xs font-medium text-slate-400">
-              행정동 코드 {neighborhood.admCd}
-            </p>
+            <p className="mt-3 text-xs font-medium text-slate-400"></p>
             <div className="mt-4 flex gap-2">
               <button
                 onClick={() => {
@@ -1022,9 +1020,7 @@ const MapPage = () => {
 
             <div className="rounded-[1.5rem] bg-white p-5 shadow-lg shadow-slate-200/50">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-                {selectedDistrict
-                  ? `${selectedDistrict.name} 행정동`
-                  : "구 선택"}
+                {selectedDistrict ? `${selectedDistrict.name}` : ""}
               </p>
               <div className="mt-4 max-h-[420px] overflow-y-auto pr-2">
                 {renderSideList()}
