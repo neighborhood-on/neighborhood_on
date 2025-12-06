@@ -993,7 +993,7 @@ const MapPage = () => {
               </p>
               <p className="mt-3 text-sm text-slate-600">
                 {selectedDistrict
-                  ? "행정동을 클릭하면 REST API가 호출되고 해당 게시판으로 이동합니다."
+                  ? "행정동을 누르면 게시판으로 이동합니다."
                   : hoveredArea
                     ? hoveredArea.level === "district"
                       ? "지도 위 구 정보를 확인하고 클릭해보세요."
