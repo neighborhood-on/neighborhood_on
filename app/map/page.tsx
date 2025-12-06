@@ -74,6 +74,7 @@ type KakaoServices = {
 
 type KakaoNamespace = {
   maps: {
+    load: (callback: () => void) => void;
     LatLng: new (lat: number, lng: number) => KakaoLatLng;
     LatLngBounds: new (
       southWest?: KakaoLatLng,
@@ -93,7 +94,7 @@ type KakaoNamespace = {
     }) => KakaoPolygon;
     Marker: new (options: {
       position: KakaoLatLng;
-      map: KakaoMap;
+      map?: KakaoMap | null;
     }) => KakaoMarker;
     Circle: new (options: {
       center: KakaoLatLng;
@@ -152,13 +153,13 @@ type HoverInfo = {
 
 type GeoJSONGeometry =
   | {
-      type: "Polygon";
-      coordinates: number[][][];
-    }
+    type: "Polygon";
+    coordinates: number[][][];
+  }
   | {
-      type: "MultiPolygon";
-      coordinates: number[][][][];
-    };
+    type: "MultiPolygon";
+    coordinates: number[][][][];
+  };
 
 type GeoJSONFeature = {
   properties: Record<string, unknown>;
