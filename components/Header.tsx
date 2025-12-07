@@ -43,7 +43,7 @@ export default function Header() {
                     {session ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                             <span style={{ fontWeight: 'bold', color: isScrolled ? '#333' : '#fff' }}>
-                                {session.user?.name}님 환영합니다!
+                                {session.user?.name}님 ({session.user?.point ?? 0} P) 환영합니다!
                             </span>
                             <button
                                 onClick={() => signOut()}

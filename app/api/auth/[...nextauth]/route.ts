@@ -7,7 +7,7 @@ import clientPromise from "@/lib/mongodb"
 import bcrypt from "bcrypt"
 
 const handler = NextAuth({
-    adapter: MongoDBAdapter(clientPromise),
+    adapter: MongoDBAdapter(clientPromise) as any,
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -16,6 +16,15 @@ const handler = NextAuth({
         KakaoProvider({
             clientId: process.env.KAKAO_CLIENT_ID ?? "",
             clientSecret: process.env.KAKAO_CLIENT_SECRET ?? "",
+            profile(profile) {
+                return {
+                    id: String(profile.id),
+                    name: profile.kakao_account?.profile?.nickname ?? profile.properties?.nickname ?? "Unknown",
+                    email: profile.kakao_account?.email,
+                    image: profile.kakao_account?.profile?.profile_image_url ?? profile.properties?.profile_image,
+                    point: 0 // Initialize point for social login
+                }
+            },
         }),
         CredentialsProvider({
             name: "Credentials",
@@ -42,7 +51,7 @@ const handler = NextAuth({
                     throw new Error('비밀번호가 일치하지 않습니다.')
                 }
 
-                return { id: user._id.toString(), name: user.name, email: user.email }
+                return { id: user._id.toString(), name: user.name, email: user.email, point: user.point || 0 }
             }
         })
     ],
@@ -53,10 +62,20 @@ const handler = NextAuth({
         strategy: "jwt",
     },
     callbacks: {
+        async jwt({ token, user, trigger, session }) {
+            if (user) {
+                token.point = (user as any).point || 0
+            }
+            if (trigger === "update" && session?.point) {
+                token.point = session.point
+            }
+            return token
+        },
         async session({ session, token }) {
             if (session.user) {
                 // @ts-expect-error - id property exists in token
                 session.user.id = token.sub
+                session.user.point = token.point as number || 0
             }
             return session
         },

@@ -2,18 +2,19 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 // 아이콘 사용을 위한 Lucide React 아이콘 시뮬레이션
 // (실제 Next.js 환경에서는 'lucide-react' 패키지를 설치해야 합니다.)
-const Search = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>;
-const PenSquare = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>;
-const Tag = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48 2.34 4.54 0l6.3-6.3a2 2 0 0 0 0-2.83L13.83 2.5a2 2 0 0 0-2.83 0z"/><path d="M7 7h.01"/></svg>;
-const ThumbsUp = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 10v12h4v-12h-4zm7-4h6c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2h-4l-3 3v-7h-4V4h4zm-3-4v4H7V0h4z"/></svg>;
-const Eye = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>;
-const Clock = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
-const MapPin = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21.5s-7-7-7-10.5a7 7 0 1 1 14 0c0 3.5-7 10.5-7 10.5z"/><circle cx="12" cy="10" r="3"/></svg>;
-const ChevronLeft = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>;
-const User = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
-const TrendingUp = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>;
+const Search = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>;
+const PenSquare = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>;
+const Tag = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48 2.34 4.54 0l6.3-6.3a2 2 0 0 0 0-2.83L13.83 2.5a2 2 0 0 0-2.83 0z" /><path d="M7 7h.01" /></svg>;
+const ThumbsUp = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 10v12h4v-12h-4zm7-4h6c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2h-4l-3 3v-7h-4V4h4zm-3-4v4H7V0h4z" /></svg>;
+const Eye = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" /></svg>;
+const Clock = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>;
+const MapPin = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21.5s-7-7-7-10.5a7 7 0 1 1 14 0c0 3.5-7 10.5-7 10.5z" /><circle cx="12" cy="10" r="3" /></svg>;
+const ChevronLeft = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>;
+const User = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>;
+const TrendingUp = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" /></svg>;
 
 
 // =================================================================
@@ -48,7 +49,7 @@ const mockPosts: Post[] = [
   { id: 6, title: '송파구민 모임 가볍게 하실 분?', content: '...', author: '윤위례', neighborhoodId: 'songpa-gu', category: '모임', views: 300, upvotes: 35, timestamp: '2025-12-04T14:20:00Z' },
 ];
 
-const formatTimeAgo = (dateString: string): string => { 
+const formatTimeAgo = (dateString: string): string => {
   const now = new Date();
   const past = new Date(dateString);
   const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
@@ -64,9 +65,9 @@ const formatTimeAgo = (dateString: string): string => {
 
 // MOCK USER DATA
 const mockUser = {
-    id: 'user_1234',
-    nickname: '동네주민123',
-    points: 4500,
+  id: 'user_1234',
+  nickname: '동네주민123',
+  points: 4500,
 };
 
 // =================================================================
@@ -82,10 +83,11 @@ const BoardPage = () => {
   // 실제로는 useSearchParams()를 통해 쿼리 파라미터를 가져와야 합니다.
   const neighborhoodId: string = MOCK_NEIGHBORHOOD_ID;
   const router = useRouter();
+  const { data: session } = useSession(); // Get session data
   const [currentNeighborhoodId, setCurrentNeighborhoodId] = useState<string>(neighborhoodId);
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  
+
   // 현재 동네 이름
   const neighborhoodName: string = currentNeighborhoodId.includes('gangnam') ? '강남구' : currentNeighborhoodId.includes('songpa') ? '송파구' : '동네를 선택해주세요';
 
@@ -98,9 +100,9 @@ const BoardPage = () => {
   const filteredPosts = useMemo<Post[]>(() => {
     return neighborhoodPosts.filter(post => {
       const categoryMatch: boolean = selectedCategory === '전체' || post.category === selectedCategory;
-      const searchMatch: boolean = searchQuery.toLowerCase() === '' || 
-                          post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          post.content.toLowerCase().includes(searchQuery.toLowerCase());
+      const searchMatch: boolean = searchQuery.toLowerCase() === '' ||
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.content.toLowerCase().includes(searchQuery.toLowerCase());
       return categoryMatch && searchMatch;
     });
   }, [neighborhoodPosts, selectedCategory, searchQuery]);
@@ -126,206 +128,206 @@ const BoardPage = () => {
 
   if (!currentNeighborhoodId) {
     return (
-        <div className="community-board-wrapper">
-            <header className="board-header">
-                <h1 className="board-title">
-                    <MapPin className="icon-map-pin" />
-                    게시판을 불러올 수 없습니다
-                </h1>
-                <button onClick={handleBackToMap} className="btn-back">
-                    <ChevronLeft className="icon-chevron" />
-                    <span>지도 화면으로</span>
-                </button>
-            </header>
-            <div className="no-posts-message">URL 쿼리 파라미터로 동네를 지정해주세요.</div>
-        </div>
+      <div className="community-board-wrapper">
+        <header className="board-header">
+          <h1 className="board-title">
+            <MapPin className="icon-map-pin" />
+            게시판을 불러올 수 없습니다
+          </h1>
+          <button onClick={handleBackToMap} className="btn-back">
+            <ChevronLeft className="icon-chevron" />
+            <span>지도 화면으로</span>
+          </button>
+        </header>
+        <div className="no-posts-message">URL 쿼리 파라미터로 동네를 지정해주세요.</div>
+      </div>
     );
   }
 
   return (
     <div className="app-container">
-        <div className="app-content-wrapper">
-            <div className="community-board-wrapper">
-              <header className="board-header">
-                <h1 className="board-title">
-                  <MapPin className="icon-map-pin" />
-                  {neighborhoodName} 동네 게시판
-                </h1>
-                <button
-                  onClick={handleBackToMap}
-                  className="btn-back"
-                >
-                  <ChevronLeft className="icon-chevron" />
-                  <span>지도 화면</span>
-                </button>
-              </header>
+      <div className="app-content-wrapper">
+        <div className="community-board-wrapper">
+          <header className="board-header">
+            <h1 className="board-title">
+              <MapPin className="icon-map-pin" />
+              {neighborhoodName} 동네 게시판
+            </h1>
+            <button
+              onClick={handleBackToMap}
+              className="btn-back"
+            >
+              <ChevronLeft className="icon-chevron" />
+              <span>지도 화면</span>
+            </button>
+          </header>
 
-              <div className="board-layout">
-                {/* ======================= 3. LEFT SIDEBAR (왼쪽 사이드바) ======================= */}
-                <aside className="sidebar">
-                  
-                  {/* 사용자 정보 카드 */}
-                  <div className="card user-card">
-                    <h2 className="card-title user-title">
-                        <User className="icon-user"/>
-                        <span>{mockUser.nickname}님</span>
-                    </h2>
-                    <div className="user-info-detail">
-                        <span className="info-text info-points-label">
-                            <TrendingUp className="icon-trending"/>
-                            <span>현재 포인트</span>
-                        </span>
-                        <span className="info-points-value">
-                            {mockUser.points.toLocaleString()} P
-                        </span>
-                    </div>
-                  </div>
-                  
-                  {/* 글작성 버튼 */}
-                  <button
-                    className="btn btn-write"
-                    onClick={() => console.log('글 작성 페이지로 이동')}
-                  >
-                    <PenSquare className="icon-write" />
-                    <span>새 글 작성</span>
-                  </button>
-                  
-                  {/* 검색창 */}
-                  <div className="card search-card">
-                    <h2 className="card-title">게시글 검색</h2>
-                    <div className="search-input-group">
-                      <input
-                        type="text"
-                        placeholder="제목 또는 내용 검색"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="search-input"
-                      />
-                      <Search className="icon-search" />
-                    </div>
-                  </div>
-                  
-                  {/* 카테고리 */}
-                  <div className="card category-card">
-                    <h2 className="card-title">카테고리</h2>
-                    <nav className="category-nav">
-                      {CATEGORIES.map(cat => (
-                        <button
-                          key={cat}
-                          onClick={() => setSelectedCategory(cat)}
-                          className={`category-button ${selectedCategory === cat ? 'selected' : ''}`}
-                        >
-                          <Tag className="icon-tag" />
-                          <span>{cat}</span>
-                        </button>
-                      ))}
-                    </nav>
-                  </div>
-                </aside>
+          <div className="board-layout">
+            {/* ======================= 3. LEFT SIDEBAR (왼쪽 사이드바) ======================= */}
+            <aside className="sidebar">
 
-                {/* ======================= 4. RIGHT MAIN CONTENT (오른쪽 메인 콘텐츠) ======================= */}
-                <main className="main-content">
-                  
-                  {/* Hot 글 섹션 */}
-                  <div className="card hot-posts-section">
-                    <h2 className="card-title hot-title">
-                      <ThumbsUp className="icon-thumbs-up" />
-                      <span>Hot 인기 글</span>
-                    </h2>
-                    <div className="post-list hot-list">
-                      {hotPosts.length > 0 ? (
-                        hotPosts.map(post => (
-                          <div 
-                            key={post.id} 
-                            onClick={() => handlePostClick(post.id)}
-                            className="post-item hot-post-item"
-                          >
-                            <div className="post-info-left">
-                                <span className="post-category-hot">{post.category}</span>
-                                <span className="post-title-hot">{post.title}</span> 
-                            </div>
-                            <div className="post-meta-stats">
-                                <span className="post-stat post-upvotes-hot"><ThumbsUp className="icon-stat-hot" />{post.upvotes}</span>
-                                <span className="post-stat post-views-hot"><Eye className="icon-stat" />{post.views}</span>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="no-posts-message">아직 이 동네에 인기글이 없습니다.</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* 전체 글 섹션 */}
-                  <div className="card all-posts-section">
-                    <h2 className="card-title all-posts-title">
-                      <Tag className="icon-tag-blue" />
-                      <span>전체 글 ({selectedCategory})</span>
-                      <span className="post-count">({filteredPosts.length}개)</span>
-                    </h2>
-                    
-                    <div className="post-list all-list">
-                      {filteredPosts.length > 0 ? (
-                        filteredPosts.map(post => (
-                          <div 
-                            key={post.id} 
-                            onClick={() => handlePostClick(post.id)}
-                            className="post-item regular-post-item"
-                          >
-                            <div className="post-main-content">
-                              {/* 제목 및 카테고리 */}
-                              <div className="post-title-group">
-                                <span className={`post-category-tag category-${post.category === '질문' ? '질문' : post.category === '맛집' ? '맛집' : 'default'}`}>
-                                  {post.category}
-                                </span>
-                                <p className="post-title-regular">{post.title}</p>
-                              </div>
-                              
-                              {/* 메타 정보 */}
-                              <div className="post-meta-info">
-                                  <p className="post-author">{post.author}</p>
-                                  <p className="post-time">
-                                    <Clock className="icon-clock" />
-                                    {formatTimeAgo(post.timestamp)}
-                                  </p>
-                              </div>
-                            </div>
-
-                            {/* 하단 통계 */}
-                            <div className="post-stats-bottom">
-                                <span className="post-stat post-upvotes">
-                                    <ThumbsUp className="icon-stat" />
-                                    <span>{post.upvotes}</span>
-                                </span>
-                                <span className="post-stat post-views">
-                                    <Eye className="icon-stat" />
-                                    <span>{post.views}</span>
-                                </span>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="no-posts-message">
-                          선택한 카테고리/검색어로 해당 동네에 작성된 글이 없습니다.
-                        </p>
-                      )}
-                    </div>
-                    
-                    {/* 페이지네이션 (추후 구현) */}
-                    <div className="pagination-area">
-                        <button className="btn-more">
-                            더 보기
-                        </button>
-                    </div>
-                  </div>
-                </main>
+              {/* 사용자 정보 카드 */}
+              <div className="card user-card">
+                <h2 className="card-title user-title">
+                  <User className="icon-user" />
+                  <span>{session?.user?.name || '방문자'}님</span>
+                </h2>
+                <div className="user-info-detail">
+                  <span className="info-text info-points-label">
+                    <TrendingUp className="icon-trending" />
+                    <span>현재 포인트</span>
+                  </span>
+                  <span className="info-points-value">
+                    {(session?.user?.point ?? 0).toLocaleString()} P
+                  </span>
+                </div>
               </div>
-              
-              <footer className="board-footer">
-                <p>현재 {neighborhoodName} 게시판이 표시되고 있습니다. 실제 동네 ID는 URL 쿼리에서 가져와야 합니다.</p>
-              </footer>
-            </div>
+
+              {/* 글작성 버튼 */}
+              <button
+                className="btn btn-write"
+                onClick={() => console.log('글 작성 페이지로 이동')}
+              >
+                <PenSquare className="icon-write" />
+                <span>새 글 작성</span>
+              </button>
+
+              {/* 검색창 */}
+              <div className="card search-card">
+                <h2 className="card-title">게시글 검색</h2>
+                <div className="search-input-group">
+                  <input
+                    type="text"
+                    placeholder="제목 또는 내용 검색"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-input"
+                  />
+                  <Search className="icon-search" />
+                </div>
+              </div>
+
+              {/* 카테고리 */}
+              <div className="card category-card">
+                <h2 className="card-title">카테고리</h2>
+                <nav className="category-nav">
+                  {CATEGORIES.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`category-button ${selectedCategory === cat ? 'selected' : ''}`}
+                    >
+                      <Tag className="icon-tag" />
+                      <span>{cat}</span>
+                    </button>
+                  ))}
+                </nav>
+              </div>
+            </aside>
+
+            {/* ======================= 4. RIGHT MAIN CONTENT (오른쪽 메인 콘텐츠) ======================= */}
+            <main className="main-content">
+
+              {/* Hot 글 섹션 */}
+              <div className="card hot-posts-section">
+                <h2 className="card-title hot-title">
+                  <ThumbsUp className="icon-thumbs-up" />
+                  <span>Hot 인기 글</span>
+                </h2>
+                <div className="post-list hot-list">
+                  {hotPosts.length > 0 ? (
+                    hotPosts.map(post => (
+                      <div
+                        key={post.id}
+                        onClick={() => handlePostClick(post.id)}
+                        className="post-item hot-post-item"
+                      >
+                        <div className="post-info-left">
+                          <span className="post-category-hot">{post.category}</span>
+                          <span className="post-title-hot">{post.title}</span>
+                        </div>
+                        <div className="post-meta-stats">
+                          <span className="post-stat post-upvotes-hot"><ThumbsUp className="icon-stat-hot" />{post.upvotes}</span>
+                          <span className="post-stat post-views-hot"><Eye className="icon-stat" />{post.views}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="no-posts-message">아직 이 동네에 인기글이 없습니다.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* 전체 글 섹션 */}
+              <div className="card all-posts-section">
+                <h2 className="card-title all-posts-title">
+                  <Tag className="icon-tag-blue" />
+                  <span>전체 글 ({selectedCategory})</span>
+                  <span className="post-count">({filteredPosts.length}개)</span>
+                </h2>
+
+                <div className="post-list all-list">
+                  {filteredPosts.length > 0 ? (
+                    filteredPosts.map(post => (
+                      <div
+                        key={post.id}
+                        onClick={() => handlePostClick(post.id)}
+                        className="post-item regular-post-item"
+                      >
+                        <div className="post-main-content">
+                          {/* 제목 및 카테고리 */}
+                          <div className="post-title-group">
+                            <span className={`post-category-tag category-${post.category === '질문' ? '질문' : post.category === '맛집' ? '맛집' : 'default'}`}>
+                              {post.category}
+                            </span>
+                            <p className="post-title-regular">{post.title}</p>
+                          </div>
+
+                          {/* 메타 정보 */}
+                          <div className="post-meta-info">
+                            <p className="post-author">{post.author}</p>
+                            <p className="post-time">
+                              <Clock className="icon-clock" />
+                              {formatTimeAgo(post.timestamp)}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* 하단 통계 */}
+                        <div className="post-stats-bottom">
+                          <span className="post-stat post-upvotes">
+                            <ThumbsUp className="icon-stat" />
+                            <span>{post.upvotes}</span>
+                          </span>
+                          <span className="post-stat post-views">
+                            <Eye className="icon-stat" />
+                            <span>{post.views}</span>
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="no-posts-message">
+                      선택한 카테고리/검색어로 해당 동네에 작성된 글이 없습니다.
+                    </p>
+                  )}
+                </div>
+
+                {/* 페이지네이션 (추후 구현) */}
+                <div className="pagination-area">
+                  <button className="btn-more">
+                    더 보기
+                  </button>
+                </div>
+              </div>
+            </main>
+          </div>
+
+          <footer className="board-footer">
+            <p>현재 {neighborhoodName} 게시판이 표시되고 있습니다. 실제 동네 ID는 URL 쿼리에서 가져와야 합니다.</p>
+          </footer>
         </div>
+      </div>
     </div>
   );
 };

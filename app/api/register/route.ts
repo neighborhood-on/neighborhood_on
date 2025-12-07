@@ -37,6 +37,7 @@ export async function POST(request: Request) {
       location, // Optional custom field
       image: '', // Default empty image
       emailVerified: null,
+      point: 0,
     };
 
     const result = await db.collection('users').insertOne(newUser);
