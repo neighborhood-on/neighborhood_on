@@ -7,7 +7,9 @@ import clientPromise from "@/lib/mongodb"
 import bcrypt from "bcrypt"
 
 const handler = NextAuth({
-    adapter: MongoDBAdapter(clientPromise) as any,
+    adapter: MongoDBAdapter(clientPromise, {
+        databaseName: process.env.MONGODB_DB || 'neighborhood_on'
+    }) as any,
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -38,7 +40,7 @@ const handler = NextAuth({
                 }
 
                 const client = await clientPromise
-                const db = client.db()
+                const db = client.db(process.env.MONGODB_DB || 'neighborhood_on')
                 const user = await db.collection('users').findOne({ email: credentials.email })
 
                 if (!user || user.provider /* Social user couldn't have password */) {

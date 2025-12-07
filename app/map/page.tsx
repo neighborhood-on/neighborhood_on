@@ -939,16 +939,24 @@ const MapPage = () => {
   return (
     <div className="min-h-screen bg-slate-50 px-4 py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-8">
-        <header>
-          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-500">
-            고양시 인터랙티브 맵
-          </p>
-          <h1 className="mt-2 text-3xl font-black text-slate-900 md:text-4xl">
-            현재 위치의 주변 사람들과 일상을 공유해보세요!
-          </h1>
-          <p className="mt-3 text-base text-slate-600">
-            원하는 지역을 선택하면 해당 게시판으로 이동합니다.
-          </p>
+        <header className="flex items-start justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-widest text-indigo-500">
+              고양시 인터랙티브 맵
+            </p>
+            <h1 className="mt-2 text-3xl font-black text-slate-900 md:text-4xl">
+              현재 위치의 주변 사람들과 일상을 공유해보세요!
+            </h1>
+            <p className="mt-3 text-base text-slate-600">
+              원하는 지역을 선택하면 해당 게시판으로 이동합니다.
+            </p>
+          </div>
+          <button
+            onClick={() => router.push('/')}
+            className="shrink-0 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-600/40"
+          >
+            🏠 홈으로
+          </button>
         </header>
 
         <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">

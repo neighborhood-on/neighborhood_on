@@ -202,15 +202,17 @@ const PostDetailPage = () => {
                 <h2>댓글 ({post.comments?.length || 0}개)</h2>
                 <div className="comment-list">
                     {post.comments && post.comments.length > 0 ? (
-                        post.comments.map(comment => (
-                            <div key={comment._id} className="comment-item">
-                                <div className="comment-header">
-                                    <span className="comment-author">{comment.authorName}</span>
-                                    <span className="comment-time">{formatTimeAgo(comment.date)}</span>
+                        post.comments
+                            .filter(comment => comment && comment.authorName && comment.content)
+                            .map(comment => (
+                                <div key={comment._id} className="comment-item">
+                                    <div className="comment-header">
+                                        <span className="comment-author">{comment.authorName}</span>
+                                        <span className="comment-time">{formatTimeAgo(comment.date)}</span>
+                                    </div>
+                                    <p className="comment-content">{comment.content}</p>
                                 </div>
-                                <p className="comment-content">{comment.content}</p>
-                            </div>
-                        ))
+                            ))
                     ) : (
                         <p className="no-comments-message">아직 댓글이 없습니다. 첫 댓글을 달아주세요!</p>
                     )}

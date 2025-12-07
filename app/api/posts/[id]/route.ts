@@ -1,18 +1,9 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb'; 
 import { ObjectId } from 'mongodb';
+import type { Post } from '@/types/database';
 
-interface Post {
-    _id: ObjectId;
-    title: string;
-    content: string; 
-    author: string; 
-    neighborhoodId: string; 
-    views: number; 
-    upvotes: number; 
-    timestamp: Date; 
-}
-
+// 게시글 목록 조회
 export async function GET(
   request: Request,
 ) {
@@ -30,25 +21,26 @@ export async function GET(
   
   try {
     const client = await clientPromise; 
-    const db = client.db(process.env.MONGODB_DB);
+    const db = client.db(process.env.MONGODB_DB || 'neighborhood_on');
 
-    const collection = db.collection<Post>("posts"); 
+    // 지역 ID를 컬렉션 이름으로 사용
+    const collection = db.collection<Post>(neighborhoodId); 
 
     const posts = await collection
-      .find({ neighborhoodId: neighborhoodId }) 
-      .sort({ timestamp: -1 }) 
+      .find({}) 
+      .sort({ date: -1 }) 
       .toArray();
       
-    const sanitizedPosts = posts.map(post => ({
+    const sanitizedPosts = posts.map((post) => ({
         ...post,
-        _id: post._id.toString(), 
-        timestamp: post.timestamp.toISOString(), 
+        _id: post._id?.toString() || '', 
+        date: post.date.toISOString(), 
     }));
 
     return NextResponse.json(sanitizedPosts);
     
   } catch (error) {
-    console.error(`게시글 로드 실패 (ID: ${neighborhoodId}):`, error);
+    console.error(`게시글 로드 실패 (컬렉션: ${neighborhoodId}):`, error);
     return NextResponse.json(
       { message: "데이터베이스에서 게시글을 가져오는 데 실패했습니다." },
       { status: 500 }
@@ -56,6 +48,7 @@ export async function GET(
   }
 }
 
+// 게시글 작성
 export async function POST(
   request: Request,
 ) {
@@ -76,7 +69,7 @@ export async function POST(
         }
 
         const client = await clientPromise; 
-        const db = client.db(process.env.MONGODB_DB);
+        const db = client.db(process.env.MONGODB_DB || 'neighborhood_on');
         const collection = db.collection(neighborhoodId);
 
         const newPost = {
@@ -87,6 +80,7 @@ export async function POST(
             views: 0,
             upvotes: 0,
             date: new Date(),
+            comments: [], // 댓글 배열 초기화
         };
 
         const result = await collection.insertOne(newPost);
@@ -107,3 +101,4 @@ export async function POST(
         );
     }
 }
+
