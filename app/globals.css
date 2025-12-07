@@ -1823,3 +1823,141 @@ body {
     color: #fff;
     transform: scale(1.1);
 }
+
+/* 글 작성 CSS */
+
+.write-container { 
+    max-width: 1200px; 
+    margin: 40px auto; 
+    padding: 30px; 
+    background-color: #ffffff; /* 흰색 배경 */
+    border-radius: 12px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* 부드러운 그림자 */
+    border: 1px solid #e0e0e0;
+}
+
+.write-title { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    color: #1e3a8a; /* 짙은 네이비/파랑 */
+    font-size: 2em; 
+    font-weight: 700;
+}
+
+/* 작성자 정보 카드 스타일 */
+.author-info { 
+    margin-bottom: 25px; 
+    padding: 15px; 
+    background: #f0f8ff; /* 연한 하늘색 배경 */
+    border-radius: 8px; 
+    font-size: 0.95em; 
+    border-left: 5px solid #3b82f6; /* 강조 라인 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.author-info p { margin: 0; }
+.author-info strong { color: #1e3a8a; font-weight: 600; }
+
+/* 폼 요소 스타일 */
+.write-form .form-group { 
+    margin-bottom: 20px; 
+}
+
+.write-form label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: 600; 
+    color: #333; 
+    font-size: 1.1em;
+}
+
+/* 입력 필드 기본 스타일 */
+.write-form input[type="text"], 
+.write-form textarea, 
+.write-form select { 
+    width: 100%; 
+    padding: 12px; 
+    border: 1px solid #ccc; 
+    border-radius: 6px; 
+    box-sizing: border-box; 
+    font-size: 16px; 
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* 입력 필드 포커스 효과 */
+.write-form input[type="text"]:focus, 
+.write-form textarea:focus, 
+.write-form select:focus {
+    border-color: #3b82f6; /* 파란색 포커스 테두리 */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* 포커스 그림자 */
+    outline: none;
+}
+
+.write-form textarea { 
+    resize: vertical;
+    min-height: 200px; /* 최소 높이 지정 */
+}
+
+/* 버튼 그룹 */
+.button-group { 
+    display: flex; 
+    justify-content: flex-end; 
+    gap: 15px; 
+    margin-top: 30px; 
+}
+
+/* 버튼 기본 스타일 */
+.button-group button {
+    padding: 12px 25px; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-size: 1em; 
+    font-weight: 600;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+/* 등록 버튼 (Primary) */
+.btn-submit { 
+    background-color: #3b82f6; /* 강조 파란색 */
+    color: white; 
+}
+.btn-submit:hover:not(:disabled) { 
+    background-color: #2563eb; 
+}
+
+/* 취소 버튼 (Secondary) */
+.btn-cancel { 
+    background-color: #9ca3af; /* 회색 */
+    color: white; 
+    width: 200px;
+}
+.btn-cancel:hover:not(:disabled) { 
+    background-color: #6b7280; 
+}
+
+/* 비활성화 상태 */
+.btn-submit:disabled, 
+.btn-cancel:disabled { 
+    opacity: 0.6; 
+    cursor: not-allowed; 
+}
+
+.error-message { 
+    color: #ef4444; 
+    background: #fee2e2;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 15px; 
+    text-align: center; 
+    font-weight: 500; 
+    border: 1px solid #f87171;
+}
+
+.loading-message { 
+    text-align: center; 
+    padding: 50px; 
+    color: #777; 
+    font-size: 1.2em;
+}
