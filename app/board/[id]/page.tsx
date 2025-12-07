@@ -3,9 +3,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react"; 
-import { signIn } from "next-auth/react"; // 로그인 유틸리티 추가
+import { signIn } from "next-auth/react";
 
-// 아이콘 사용을 위한 Lucide React 아이콘 시뮬레이션 (유지)
 const Search = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>;
 const PenSquare = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>;
 const Tag = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48 2.34 4.54 0l6.3-6.3a2 2 0 0 0 0-2.83L13.83 2.5a2 2 0 0 0-2.83 0z"/><path d="M7 7h.01"/></svg>;
@@ -18,21 +17,16 @@ const User = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" 
 const TrendingUp = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>;
 
 
-// =================================================================
-// 1. UTILS & DATA (유틸리티 및 데이터)
-// =================================================================
-
-// 🚀 Post 인터페이스 수정: author -> authorName, timestamp -> date
 interface Post {
-  _id: string; // ObjectId를 문자열로 사용
+  _id: string; 
   title: string;
   content: string;
-  authorName: string; // ✨ 변경됨
+  authorName: string; 
   neighborhoodId: string; 
   category: string;
   views: number;
   upvotes: number;
-  date: string; // ✨ 변경됨
+  date: string;
 }
 
 const GEOJSON_ENDPOINTS = {
@@ -42,9 +36,6 @@ const GEOJSON_ENDPOINTS = {
 
 const CATEGORIES: string[] = ['전체', '질문', '자유', '맛집', '정보', '모임'];
 
-
-
-// 🚀 날짜 처리 함수 수정: dateString -> dateString
 const formatTimeAgo = (dateString: string): string => { 
   const now = new Date();
   const past = new Date(dateString);
@@ -59,7 +50,6 @@ const formatTimeAgo = (dateString: string): string => {
   return `${diffInDays}일 전`;
 };
 
-// GeoJSON Fetch 함수 (변경 없음)
 async function getAdmNameFromGeoJSON(targetCode: string, geojsonEndpoints: typeof GEOJSON_ENDPOINTS): Promise<string> {
     
     const endpointKey = targetCode.length <= 5 ? 'districts' : 'neighborhoods'; 
@@ -97,11 +87,6 @@ async function getAdmNameFromGeoJSON(targetCode: string, geojsonEndpoints: typeo
     }
 }
 
-
-// =================================================================
-// 3. 🎯 BoardPage Component
-// =================================================================
-
 const BoardPage = () => {
   const router = useRouter();
   
@@ -113,17 +98,14 @@ const BoardPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // ⚠️ MongoDB 연동을 위한 상태 추가
   const [posts, setPosts] = useState<Post[]>([]); 
   const [isLoading, setIsLoading] = useState<boolean>(true); 
   
-  // ⭐️ 글 작성 버튼 클릭 핸들러 (로그인 확인 및 이동 로직 추가)
   const handleWriteClick = () => {
     if (status === 'unauthenticated') {
         alert('글을 작성하려면 로그인이 필요합니다.');
-        signIn(); // NextAuth 로그인 페이지로 이동
+        signIn();
     } else if (currentNeighborhoodId) {
-        // 로그인 상태이고 동네 ID가 있는 경우, 글 작성 페이지로 이동
         router.push(`/board/${currentNeighborhoodId}/write`);
     } else {
         alert('동네 정보가 없어 글을 작성할 수 없습니다.');
@@ -131,28 +113,24 @@ const BoardPage = () => {
   };
 
 
-  // ⚠️ 게시글 데이터를 API에서 가져오는 함수 (useCallback 사용)
   const fetchPosts = useCallback(async (id: string) => {
     setIsLoading(true);
     try {
-        // 백엔드 API 엔드포인트 호출 (/api/posts/[id])
-        // 참고: 백엔드는 이 id를 컬렉션 이름으로 사용하여 데이터를 가져와야 합니다.
         const response = await fetch(`/api/posts/${id}`);
         if (!response.ok) {
-            throw new Error('게시글 API 호출 실패'); // 실제 환경에서는 이 코드를 사용해야 합니다.
+            throw new Error('게시글 API 호출 실패');
         }
         const data: Post[] = await response.json();
         setPosts(data);
     } catch (error) {
         console.error("게시글 로드 오류:", error);
-        setPosts([]); // 오류 발생 시 빈 배열 설정
+        setPosts([]);
     } finally {
         setIsLoading(false);
     }
-  }, []); // 의존성 없음
+  }, []);
 
   
-  // 3. 컴포넌트 마운트 시 URL에서 ID 추출, 이름 Fetch, 게시글 Fetch
   useEffect(() => {
     if (typeof window !== 'undefined') {
         const pathname = window.location.pathname;
@@ -162,7 +140,6 @@ const BoardPage = () => {
         if (pathId && pathId !== 'board') {
             setCurrentNeighborhoodId(pathId);
 
-            // GeoJSON 데이터 가져오기 및 이름 설정
             getAdmNameFromGeoJSON(pathId, GEOJSON_ENDPOINTS)
                 .then(name => {
                     setNeighborhoodName(name);
@@ -171,23 +148,18 @@ const BoardPage = () => {
                     setNeighborhoodName("이름을 불러오지 못했습니다.");
                 });
             
-            // ⭐️ 게시글 API 호출
             fetchPosts(pathId); 
 
         } else {
             setCurrentNeighborhoodId(null); 
             setNeighborhoodName("동네를 선택해주세요");
-            setIsLoading(false); // ID 없으면 로딩 종료
+            setIsLoading(false);
         }
     }
-  }, [fetchPosts]); // fetchPosts를 의존성 배열에 추가
+  }, [fetchPosts]);
 
-
-  // 1. 동네별 필터링
-  // ⚠️ posts 상태 자체가 이미 API 호출 시 동네별 필터링된 결과입니다.
   const neighborhoodPosts = posts; 
 
-  // 2. 카테고리 및 검색어 필터링
   const filteredPosts = useMemo<Post[]>(() => {
     return neighborhoodPosts.filter(post => {
       const categoryMatch: boolean = selectedCategory === '전체' || post.category === selectedCategory;
@@ -198,32 +170,25 @@ const BoardPage = () => {
     });
   }, [neighborhoodPosts, selectedCategory, searchQuery]);
 
-  // 인기글
   const hotPosts = useMemo<Post[]>(() => {
     return neighborhoodPosts
       .slice() 
-      // post.upvotes와 post.views를 기준으로 정렬
       .sort((a, b) => (b.upvotes * 0.7 + b.views * 0.3) - (a.upvotes * 0.7 + a.views * 0.3))
       .slice(0, 3);
   }, [neighborhoodPosts]);
 
-  // 게시글 클릭 핸들러 (ID를 MongoDB _id 문자열로 전달)
   const handlePostClick = (postId: string) => { 
-    // 실제 게시글 상세 페이지로 라우팅 (예: /board/41281/657088f1a1b2c3d4e5f60001)
     router.push(`/board/${currentNeighborhoodId}/${postId}`);
   };
 
-  // 지도 화면으로 돌아가기
   const handleBackToMap = () => {
     router.push('/map');
   };
 
-  // 사용자 정보 설정 (NextAuth 세션 기반)
   const isAuthenticated = status === 'authenticated';
   const userNickname = session?.user?.name || '방문자';
   const userPoints = (session?.user as any)?.point ?? 0;
 
-  // ⚠️ 로딩 상태 렌더링
   if (isLoading || status === 'loading') {
     return (
         <div className="community-board-wrapper">
@@ -283,10 +248,8 @@ const BoardPage = () => {
               </header>
 
               <div className="board-layout">
-                {/* ======================= 3. LEFT SIDEBAR (왼쪽 사이드바) ======================= */}
                 <aside className="sidebar">
                   
-                  {/* 사용자 정보 카드 (NextAuth 연동 유지) */}
                   <div className="card user-card">
                     <h2 className="card-title user-title">
                       <User className="icon-user" />
@@ -303,16 +266,14 @@ const BoardPage = () => {
                     </div>
                   </div>
                   
-                  {/* 글작성 버튼 */}
                   <button
                     className="btn btn-write"
-                    onClick={handleWriteClick} // ✨ 글쓰기 로직
+                    onClick={handleWriteClick}
                   >
                     <PenSquare className="icon-write" />
                     <span>{isAuthenticated ? '새 글 작성' : '로그인 후 작성'}</span>
                   </button>
                   
-                  {/* 검색창 */}
                   <div className="card search-card">
                     <h2 className="card-title">게시글 검색</h2>
                     <div className="search-input-group">
@@ -327,7 +288,6 @@ const BoardPage = () => {
                     </div>
                   </div>
                   
-                  {/* 카테고리 */}
                   <div className="card category-card">
                     <h2 className="card-title">카테고리</h2>
                     <nav className="category-nav">
@@ -345,10 +305,8 @@ const BoardPage = () => {
                   </div>
                 </aside>
 
-                {/* ======================= 4. RIGHT MAIN CONTENT (오른쪽 메인 콘텐츠) ======================= */}
                 <main className="main-content">
                   
-                  {/* Hot 글 섹션 */}
                   <div className="card hot-posts-section">
                     <h2 className="card-title hot-title">
                       <ThumbsUp className="icon-thumbs-up" />
@@ -378,7 +336,6 @@ const BoardPage = () => {
                     </div>
                   </div>
 
-                  {/* 전체 글 섹션 */}
                   <div className="card all-posts-section">
                     <h2 className="card-title all-posts-title">
                       <Tag className="icon-tag-blue" />
@@ -395,7 +352,6 @@ const BoardPage = () => {
                             className="post-item regular-post-item"
                           >
                             <div className="post-main-content">
-                              {/* 제목 및 카테고리 */}
                               <div className="post-title-group">
                                 <span className={`post-category-tag category-${post.category === '질문' ? '질문' : post.category === '맛집' ? '맛집' : 'default'}`}>
                                   {post.category}
@@ -403,19 +359,15 @@ const BoardPage = () => {
                                 <p className="post-title-regular">{post.title}</p>
                               </div>
                               
-                              {/* 메타 정보 */}
                               <div className="post-meta-info">
-                                  {/* 🚀 post.authorName을 사용하도록 변경 */}
                                   <p className="post-author">{post.authorName}</p> 
                                   <p className="post-time">
                                     <Clock className="icon-clock" />
-                                    {/* 🚀 post.date를 사용하도록 변경 */}
                                     {formatTimeAgo(post.date)}
                                   </p>
                               </div>
                             </div>
 
-                            {/* 하단 통계 */}
                             <div className="post-stats-bottom">
                                 <span className="post-stat post-upvotes">
                                     <ThumbsUp className="icon-stat" />
@@ -435,7 +387,6 @@ const BoardPage = () => {
                       )}
                     </div>
                     
-                    {/* 페이지네이션 (추후 구현) */}
                     <div className="pagination-area">
                         <button className="btn-more">
                             더 보기
@@ -446,7 +397,7 @@ const BoardPage = () => {
               </div>
               
               <footer className="board-footer">
-                <p>현재 {neighborhoodName} 게시판이 표시되고 있습니다. 실제 동네 ID: {currentNeighborhoodId}</p>
+                <p>{neighborhoodName} Board</p>
               </footer>
             </div>
         </div>
