@@ -26,7 +26,7 @@ const teamMembers = [
         avatarColor: "#10b981",
         photoUrl: "/images/team/sjh.png", // Placeholder
         github: "https://github.com/J4EH00N",
-        portfolio: "https://j4eh00n.com",
+        portfolio: "https://portfolio-v1-khaki-psi.vercel.app/",
         skills: ["메인화면", "로그인 / 로그아웃 / 회원가입",]
     },
     {
@@ -54,7 +54,7 @@ const teamMembers = [
         avatarColor: "#8b5cf6",
         photoUrl: "/images/team/phs.png", // Placeholder
         github: "https://github.com/Pandyo",
-        portfolio: "https://pandyo.com",
+        portfolio: "https://web-server-class-project-01.vercel.app/",
         skills: ["지역별 게시판 구축"]
     },
     {

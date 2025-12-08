@@ -39,6 +39,8 @@ export default function Header() {
                     </Link>
                 </div>
 
+                {/* Navigation removed as requested */}
+
                 <div className="auth-buttons">
                     {session ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>

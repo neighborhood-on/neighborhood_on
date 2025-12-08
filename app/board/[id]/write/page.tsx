@@ -13,7 +13,7 @@ const WritePostPage = () => {
   const { data: session, status } = useSession();
 
   const neighborhoodId = params.id as string;
-  
+
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState(CATEGORIES[0]);
@@ -55,9 +55,10 @@ const WritePostPage = () => {
       title: title,
       content: content,
       category: category,
-      authorName: session.user.name, 
+      authorName: session.user.name,
+      authorEmail: session.user.email,
     };
-    
+
     try {
       const response = await fetch(`/api/posts/${neighborhoodId}`, {
         method: 'POST',
@@ -72,7 +73,8 @@ const WritePostPage = () => {
         throw new Error(errorData.message || '게시글 작성에 실패했습니다.');
       }
 
-      alert('게시글이 성공적으로 작성되었습니다!');
+      alert('게시글이 성공적으로 작성되었습니다! (+10 포인트)');
+      sessionStorage.setItem('needRefreshPoint', 'true');
       router.push(`/board/${neighborhoodId}`);
 
     } catch (err: any) {
@@ -96,13 +98,13 @@ const WritePostPage = () => {
   return (
     <div className="write-container">
       <h1 className="write-title">새 게시글 작성</h1>
-      
+
       <div className="author-info">
         <p>작성자: <strong>{session?.user?.name || '알 수 없음'}</strong></p>
       </div>
 
       <form onSubmit={handleSubmit} className="write-form">
-        
+
         <div className="form-group">
           <label htmlFor="category">카테고리</label>
           <select
