@@ -1235,7 +1235,9 @@ body {
 
 .post-list.all-list {
     border-top: 1px solid #e5e7eb;
-    /* divide-y divide-gray-200 equivalent */
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
 }
 
 .regular-post-item {
@@ -1306,10 +1308,33 @@ body {
 }
 
 .category-default {
+    background-color: #e0e7ff;
+    color: #4338ca;
+}
+
+.category-질문 {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.category-자유 {
     background-color: #dbeafe;
-    /* bg-blue-100 */
-    color: #1d4ed8;
-    /* text-blue-700 */
+    color: #2563eb;
+}
+
+.category-맛집 {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.category-정보 {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+.category-모임 {
+    background-color: #e9d5ff;
+    color: #9333ea;
 }
 
 .post-title-regular {

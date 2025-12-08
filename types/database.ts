@@ -34,6 +34,7 @@ export interface Post {
     category: string;         // 카테고리
     views: number;            // 조회수
     upvotes: number;          // 추천수
+    upvotedBy?: string[];     // 추천한 사용자 email 목록
     date: Date;               // 작성일
     comments: Comment[];      // 댓글 배열
 }
