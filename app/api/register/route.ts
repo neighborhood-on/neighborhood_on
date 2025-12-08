@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import clientPromise from '@/lib/mongodb';
-import type { User } from '@/types/database';
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || 'neighborhood_on');
+    const db = client.db();
 
     // Check if user already exists
     const existingUser = await db.collection('users').findOne({ email });
@@ -30,16 +29,16 @@ export async function POST(request: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user (선배님 구조에 맞춤)
-    const newUser: Omit<User, '_id'> = {
+    // Create user
+    const newUser = {
       name,
       email,
       password: hashedPassword,
-      location: location || '', // 선택 사항
-      point: 0, // 기본값 0
+      location, // Optional custom field
+      point: 0,
     };
 
-    const result = await db.collection<User>('users').insertOne(newUser);
+    const result = await db.collection('users').insertOne(newUser);
 
     return NextResponse.json(
       { message: '회원가입이 완료되었습니다.', userId: result.insertedId },
