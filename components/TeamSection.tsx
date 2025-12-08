@@ -4,72 +4,72 @@ const teamMembers = [
     {
         name: "정재성",
         role: "Team Leader",
-        mbti: "ENTJ",
+        mbti: "　　",
         oneLiner: "Lead with Vision",
-        issueDate: "2024.03.10 발급",
-        idNumber: "980101-1******",
+        issueDate: "2025.09.01 발급",
+        idNumber: "030728-3******",
         address: "경기도 시흥시",
         avatarColor: "#3b82f6",
         photoUrl: "/images/team/jjs.png", // Placeholder
         github: "https://github.com/Interludeal",
         portfolio: "https://interludeal.com",
-        skills: ["Project Management", "Full Stack"]
+        skills: ["지역별 게시판 구축"]
     },
     {
         name: "심재훈",
-        role: "Backend",
-        mbti: "INTP",
+        role: "Team Member",
+        mbti: "ESTJ",
         oneLiner: "Architecture is Art",
-        issueDate: "2024.03.12 발급",
-        idNumber: "990202-1******",
+        issueDate: "2025.09.01 발급",
+        idNumber: "030928-3******",
         address: "경기도 고양시",
         avatarColor: "#10b981",
         photoUrl: "/images/team/sjh.png", // Placeholder
         github: "https://github.com/J4EH00N",
         portfolio: "https://j4eh00n.com",
-        skills: ["Server Architecture", "DB Optimization"]
+        skills: ["메인화면", "로그인 / 로그아웃 / 회원가입",]
     },
     {
         name: "곽민경",
         role: "Team Member",
         mbti: "ISFP",
         oneLiner: "Pixel Perfect Design",
-        issueDate: "2024.03.15 발급",
-        idNumber: "000303-4******",
-        address: "경기도 고양시",
+        issueDate: "2025.09.01 발급",
+        idNumber: "050214-4******",
+        address: "경기도 광주시",
         avatarColor: "#f59e0b",
         photoUrl: "/images/team/kmg.png", // Placeholder
         github: "https://github.com/kkaturi14",
         portfolio: "https://kkaturi14.com",
-        skills: ["Frontend Dev", "UI/UX Design"]
+        skills: ["PPT 작성", "DB 설계"]
     },
     {
         name: "박혜수",
         role: "Team Member",
-        mbti: "ENFP",
+        mbti: "ENTJ",
         oneLiner: "Creative & Dynamic",
-        issueDate: "2024.03.20 발급",
-        idNumber: "010404-4******",
-        address: "서울특별시 마포구",
+        issueDate: "2025.09.01 발급",
+        idNumber: "050113-4******",
+        address: "경기도 고양시",
         avatarColor: "#8b5cf6",
         photoUrl: "/images/team/phs.png", // Placeholder
         github: "https://github.com/Pandyo",
         portfolio: "https://pandyo.com",
-        skills: ["Frontend Dev", "React Native"]
+        skills: ["지역별 게시판 구축"]
     },
     {
         name: "정윤서",
         role: "Team Member",
-        mbti: "ISTJ",
+        mbti: "INFJ",
         oneLiner: "Plan & Execute",
-        issueDate: "2024.03.25 발급",
-        idNumber: "020505-4******",
+        issueDate: "2025.09.01 발급",
+        idNumber: "050326-3******",
         address: "경기도 고양시",
         avatarColor: "#06b6d4",
         photoUrl: "/images/team/jys.png", // Placeholder
         github: "https://github.com/oesp91",
         portfolio: "https://oesp91.com",
-        skills: ["Planning", "Documentation"]
+        skills: ["Map API 연결"]
     },
 ];
 
@@ -98,7 +98,6 @@ export default function TeamSection() {
                                             <div className="id-card-name">{member.name}</div>
                                             <div className="id-card-subtitle">주민등록증</div>
                                         </div>
-                                        <div className="id-card-hologram"></div>
                                     </div>
                                 </div>
 
