@@ -55,7 +55,8 @@ const WritePostPage = () => {
       title: title,
       content: content,
       category: category,
-      authorName: session.user.name, 
+      authorName: session.user.name,
+      authorEmail: session.user.email,
     };
     
     try {
@@ -72,7 +73,8 @@ const WritePostPage = () => {
         throw new Error(errorData.message || '게시글 작성에 실패했습니다.');
       }
 
-      alert('게시글이 성공적으로 작성되었습니다!');
+      alert('게시글이 성공적으로 작성되었습니다! (+10 포인트)');
+      sessionStorage.setItem('needRefreshPoint', 'true');
       router.push(`/board/${neighborhoodId}`);
 
     } catch (err: any) {

@@ -7,7 +7,8 @@ import { useSession, signOut } from 'next-auth/react'
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false)
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
+    const [realTimePoint, setRealTimePoint] = useState<number | null>(null)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -23,6 +24,28 @@ export default function Header() {
             window.removeEventListener('scroll', handleScroll)
         }
     }, [])
+
+    useEffect(() => {
+        const fetchUserPoint = async () => {
+            if (status === 'authenticated') {
+                try {
+                    const response = await fetch('/api/users/me')
+                    if (response.ok) {
+                        const userData = await response.json()
+                        setRealTimePoint(userData.point)
+                    }
+                } catch (error) {
+                    console.error('포인트 조회 실패:', error)
+                }
+            }
+        }
+
+        fetchUserPoint()
+        
+        const interval = setInterval(fetchUserPoint, 10000)
+        
+        return () => clearInterval(interval)
+    }, [status])
 
     return (
         <header className={`header ${isScrolled ? 'scrolled' : 'transparent'}`}>
@@ -43,7 +66,7 @@ export default function Header() {
                     {session ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                             <span style={{ fontWeight: 'bold', color: isScrolled ? '#333' : '#fff' }}>
-                                {session.user?.name}님 ({session.user?.point ?? 0} P) 환영합니다!
+                                {session.user?.name}님 ({realTimePoint !== null ? realTimePoint : (session.user?.point ?? 0)} P) 환영합니다!
                             </span>
                             <button
                                 onClick={() => signOut()}

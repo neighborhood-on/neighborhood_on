@@ -62,7 +62,7 @@ export async function POST(
 
     try {
         const body = await request.json();
-        const { title, content, category, authorName } = body;
+        const { title, content, category, authorName, authorEmail } = body;
         
         if (!title || !content || !category || !authorName) {
             return NextResponse.json({ message: "필수 항목이 누락되었습니다." }, { status: 400 });
@@ -79,15 +79,36 @@ export async function POST(
             category: category,
             views: 0,
             upvotes: 0,
+            upvotedBy: [],
             date: new Date(),
-            comments: [], // 댓글 배열 초기화
+            comments: [],
         };
 
         const result = await collection.insertOne(newPost);
 
+        if (authorEmail) {
+            try {
+                const usersCollection = db.collection('users');
+                console.log('글쓰기 포인트 지급 시도 - Email:', authorEmail);
+                const pointResult = await usersCollection.updateOne(
+                    { email: authorEmail },
+                    { $inc: { point: 10 } }
+                );
+                console.log('포인트 업데이트 결과:', pointResult.matchedCount, '매칭,', pointResult.modifiedCount, '수정');
+                
+                if (pointResult.matchedCount === 0) {
+                    console.error('사용자를 찾을 수 없음! Email:', authorEmail);
+                }
+            } catch (pointError) {
+                console.error('포인트 지급 실패:', pointError);
+            }
+        } else {
+            console.error('authorEmail이 없습니다!');
+        }
+
         return NextResponse.json(
             { 
-                message: "게시글이 성공적으로 작성되었습니다.",
+                message: "게시글이 성공적으로 작성되었습니다. (+10 포인트)",
                 postId: result.insertedId.toString()
             }, 
             { status: 201 } 

@@ -3,7 +3,6 @@ import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import type { Comment } from '@/types/database';
 
-// 댓글 추가
 export async function POST(
     request: Request,
     { params }: { params: Promise<{ id: string; postId: string }> }
@@ -26,7 +25,7 @@ export async function POST(
 
     try {
         const body = await request.json();
-        const { authorName, content } = body;
+        const { authorName, authorEmail, content } = body;
 
         if (!authorName || !content) {
             return NextResponse.json(
@@ -39,7 +38,6 @@ export async function POST(
         const db = client.db(process.env.MONGODB_DB || 'neighborhood_on');
         const collection = db.collection(neighborhoodId);
 
-        // 새 댓글 객체
         const newComment: Comment = {
             _id: new ObjectId(),
             authorName,
@@ -47,7 +45,6 @@ export async function POST(
             date: new Date()
         };
 
-        // 게시글의 comments 배열에 추가
         const result = await collection.updateOne(
             { _id: new ObjectId(postId) },
             { $push: { comments: newComment } } as any
@@ -60,8 +57,28 @@ export async function POST(
             );
         }
 
+        if (authorEmail) {
+            try {
+                const usersCollection = db.collection('users');
+                console.log('포인트 지급 시도 - Email:', authorEmail);
+                const pointResult = await usersCollection.updateOne(
+                    { email: authorEmail },
+                    { $inc: { point: 5 } }
+                );
+                console.log('포인트 업데이트 결과:', pointResult.matchedCount, '매칭,', pointResult.modifiedCount, '수정');
+                
+                if (pointResult.matchedCount === 0) {
+                    console.error('사용자를 찾을 수 없음! Email:', authorEmail);
+                }
+            } catch (pointError) {
+                console.error('포인트 지급 실패:', pointError);
+            }
+        } else {
+            console.error('authorEmail이 없습니다!');
+        }
+
         return NextResponse.json({
-            message: "댓글이 추가되었습니다.",
+            message: "댓글이 추가되었습니다. (+5 포인트)",
             comment: {
                 ...newComment,
                 _id: newComment._id?.toString(),
@@ -78,7 +95,6 @@ export async function POST(
     }
 }
 
-// 댓글 삭제
 export async function DELETE(
     request: Request,
     { params }: { params: Promise<{ id: string; postId: string }> }
@@ -114,7 +130,6 @@ export async function DELETE(
         const db = client.db(process.env.MONGODB_DB || 'neighborhood_on');
         const collection = db.collection(neighborhoodId);
 
-        // comments 배열에서 특정 댓글 제거
         const result = await collection.updateOne(
             { _id: new ObjectId(postId) },
             { $pull: { comments: { _id: new ObjectId(commentId) } } } as any

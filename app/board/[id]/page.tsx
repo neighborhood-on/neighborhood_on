@@ -11,6 +11,7 @@ const Tag = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" w
 const ThumbsUp = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 10v12h4v-12h-4zm7-4h6c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2h-4l-3 3v-7h-4V4h4zm-3-4v4H7V0h4z"/></svg>;
 const Eye = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>;
 const Clock = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+const MessageCircle = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>;
 const MapPin = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21.5s-7-7-7-10.5a7 7 0 1 1 14 0c0 3.5-7 10.5-7 10.5z"/><circle cx="12" cy="10" r="3"/></svg>;
 const ChevronLeft = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>;
 const User = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
@@ -106,13 +107,17 @@ const BoardPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const [posts, setPosts] = useState<Post[]>([]); 
-  const [isLoading, setIsLoading] = useState<boolean>(true); 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [realTimePoint, setRealTimePoint] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const postsPerPage = 5; 
   
   const handleWriteClick = () => {
     if (status === 'unauthenticated') {
         alert('글을 작성하려면 로그인이 필요합니다.');
         signIn();
     } else if (currentNeighborhoodId) {
+        sessionStorage.setItem('needRefreshPoint', 'true');
         router.push(`/board/${currentNeighborhoodId}/write`);
     } else {
         alert('동네 정보가 없어 글을 작성할 수 없습니다.');
@@ -138,6 +143,33 @@ const BoardPage = () => {
   }, []);
 
   
+  const fetchUserPoint = useCallback(async () => {
+    if (status === 'authenticated') {
+      try {
+        const response = await fetch('/api/users/me');
+        if (response.ok) {
+          const userData = await response.json();
+          setRealTimePoint(userData.point);
+        }
+      } catch (error) {
+        console.error('포인트 조회 실패:', error);
+      }
+    }
+  }, [status]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery]);
+
+  useEffect(() => {
+    fetchUserPoint();
+    
+    if (sessionStorage.getItem('needRefreshPoint') === 'true') {
+      sessionStorage.removeItem('needRefreshPoint');
+      setTimeout(() => fetchUserPoint(), 500);
+    }
+  }, [fetchUserPoint]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
         const pathname = window.location.pathname;
@@ -177,6 +209,12 @@ const BoardPage = () => {
     });
   }, [neighborhoodPosts, selectedCategory, searchQuery]);
 
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+  const paginatedPosts = useMemo(() => {
+    const startIndex = (currentPage - 1) * postsPerPage;
+    return filteredPosts.slice(startIndex, startIndex + postsPerPage);
+  }, [filteredPosts, currentPage, postsPerPage]);
+
   const hotPosts = useMemo<Post[]>(() => {
     return neighborhoodPosts
       .slice() 
@@ -194,7 +232,7 @@ const BoardPage = () => {
 
   const isAuthenticated = status === 'authenticated';
   const userNickname = session?.user?.name || '방문자';
-  const userPoints = (session?.user as any)?.point ?? 0;
+  const userPoints = realTimePoint !== null ? realTimePoint : ((session?.user as any)?.point ?? 0);
 
   if (isLoading || status === 'loading') {
     return (
@@ -334,6 +372,7 @@ const BoardPage = () => {
                             <div className="post-meta-stats">
                                 <span className="post-stat post-upvotes-hot"><ThumbsUp className="icon-stat-hot" />{post.upvotes}</span>
                                 <span className="post-stat post-views-hot"><Eye className="icon-stat" />{post.views}</span>
+                                <span className="post-stat post-comments-hot"><MessageCircle className="icon-stat" />{post.comments?.length || 0}</span>
                             </div>
                           </div>
                         ))
@@ -351,8 +390,8 @@ const BoardPage = () => {
                     </h2>
                     
                     <div className="post-list all-list">
-                      {filteredPosts.length > 0 ? (
-                        filteredPosts.map(post => (
+                      {paginatedPosts.length > 0 ? (
+                        paginatedPosts.map(post => (
                           <div 
                             key={post._id} 
                             onClick={() => handlePostClick(post._id)}
@@ -360,7 +399,7 @@ const BoardPage = () => {
                           >
                             <div className="post-main-content">
                               <div className="post-title-group">
-                                <span className={`post-category-tag category-${post.category === '질문' ? '질문' : post.category === '맛집' ? '맛집' : 'default'}`}>
+                                <span className={`post-category-tag category-${post.category}`}>
                                   {post.category}
                                 </span>
                                 <p className="post-title-regular">{post.title}</p>
@@ -384,6 +423,10 @@ const BoardPage = () => {
                                     <Eye className="icon-stat" />
                                     <span>{post.views}</span>
                                 </span>
+                                <span className="post-stat post-comments">
+                                    <MessageCircle className="icon-stat" />
+                                    <span>{post.comments?.length || 0}</span>
+                                </span>
                             </div>
                           </div>
                         ))
@@ -394,11 +437,64 @@ const BoardPage = () => {
                       )}
                     </div>
                     
-                    <div className="pagination-area">
-                        <button className="btn-more">
-                            더 보기
+                    {filteredPosts.length > 0 && (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '24px' }}>
+                        <button 
+                          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                          disabled={currentPage === 1}
+                          style={{
+                            padding: '8px 16px',
+                            border: '1px solid #d1d5db',
+                            backgroundColor: currentPage === 1 ? '#f3f4f6' : '#ffffff',
+                            borderRadius: '8px',
+                            color: '#374151',
+                            fontWeight: '600',
+                            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                            opacity: currentPage === 1 ? 0.5 : 1,
+                          }}
+                        >
+                          이전
                         </button>
-                    </div>
+                        
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button
+                              key={page}
+                              onClick={() => setCurrentPage(page)}
+                              style={{
+                                minWidth: '40px',
+                                height: '40px',
+                                border: '1px solid #e5e7eb',
+                                backgroundColor: currentPage === page ? '#3b82f6' : '#ffffff',
+                                borderRadius: '8px',
+                                color: currentPage === page ? '#ffffff' : '#6b7280',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              {page}
+                            </button>
+                          ))}
+                        </div>
+                        
+                        <button 
+                          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                          disabled={currentPage === totalPages}
+                          style={{
+                            padding: '8px 16px',
+                            border: '1px solid #d1d5db',
+                            backgroundColor: currentPage === totalPages ? '#f3f4f6' : '#ffffff',
+                            borderRadius: '8px',
+                            color: '#374151',
+                            fontWeight: '600',
+                            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                            opacity: currentPage === totalPages ? 0.5 : 1,
+                          }}
+                        >
+                          다음
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </main>
               </div>

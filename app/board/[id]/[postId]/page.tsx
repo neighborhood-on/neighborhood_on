@@ -92,6 +92,47 @@ const PostDetailPage = () => {
         }
     }, [neighborhoodId, postId]);
 
+    const handleUpvote = async () => {
+        if (status !== 'authenticated' || !session?.user?.email) {
+            alert('추천하려면 로그인이 필요합니다.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/posts/${neighborhoodId}/${postId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    action: 'upvote',
+                    userEmail: session.user.email
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                if (result.alreadyUpvoted) {
+                    alert('이미 추천한 게시글입니다!');
+                } else {
+                    alert(result.message || '추천 처리 실패');
+                }
+                return;
+            }
+            
+            setPost(prevPost => {
+                if (!prevPost) return null;
+                return {
+                    ...prevPost,
+                    upvotes: result.upvotes,
+                };
+            });
+            
+            alert('추천했습니다!');
+        } catch (err: any) {
+            alert(`추천 실패: ${err.message}`);
+        }
+    };
+
     const handleCommentSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
@@ -112,6 +153,7 @@ const PostDetailPage = () => {
                 body: JSON.stringify({
                     content: commentContent,
                     authorName: session.user.name,
+                    authorEmail: session.user.email,
                 }),
             });
 
@@ -124,7 +166,7 @@ const PostDetailPage = () => {
             
             setPost(prevPost => {
                 if (!prevPost) return null;
-                const newComment: Comment = result.newComment; 
+                const newComment: Comment = result.comment; 
                 
                 return {
                     ...prevPost,
@@ -133,6 +175,9 @@ const PostDetailPage = () => {
             });
             
             setCommentContent('');
+            alert('댓글이 작성되었습니다! (+5 포인트)');
+            
+            sessionStorage.setItem('needRefreshPoint', 'true');
             
         } catch (err: any) {
             alert(`댓글 작성 실패: ${err.message}`);
@@ -192,7 +237,7 @@ const PostDetailPage = () => {
             </section>
 
             <footer className="detail-footer">
-                <button className="btn-upvote">
+                <button onClick={handleUpvote} className="btn-upvote">
                     <ThumbsUp className="icon-upvote-large" />
                     추천하기 ({post.upvotes.toLocaleString()})
                 </button>
@@ -249,8 +294,35 @@ const PostDetailPage = () => {
                 .detail-footer { text-align: center; padding: 30px 0 10px; }
                 .btn-upvote { background: #4caf50; color: white; padding: 15px 30px; border: none; border-radius: 30px; cursor: pointer; font-size: 1.2em; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s; }
                 .btn-upvote:hover { background: #43a047; }
-                .comment-section-placeholder { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
-                .comment-section-placeholder h2 { font-size: 1.5em; color: #1e3a8a; }
+                
+                .comment-section { margin-top: 40px; padding: 25px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; }
+                .comment-section h2 { font-size: 1.4em; color: #1e293b; font-weight: 700; margin: 0 0 20px 0; display: flex; align-items: center; gap: 8px; }
+                
+                .comment-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; max-height: 600px; overflow-y: auto; }
+                .comment-list::-webkit-scrollbar { width: 6px; }
+                .comment-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+                .comment-list::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+                
+                .comment-item { background: white; padding: 16px 20px; border-radius: 12px; border: 1px solid #e2e8f0; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+                .comment-item:hover { border-color: #cbd5e1; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+                
+                .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+                .comment-author { font-weight: 600; color: #3b82f6; font-size: 0.95em; display: flex; align-items: center; gap: 6px; }
+                .comment-author::before { content: '👤'; font-size: 1.1em; }
+                .comment-time { color: #94a3b8; font-size: 0.85em; }
+                
+                .comment-content { color: #334155; font-size: 0.95em; line-height: 1.6; margin: 0; white-space: pre-wrap; word-break: break-word; }
+                
+                .no-comments-message { text-align: center; color: #94a3b8; padding: 40px 20px; font-size: 0.95em; }
+                
+                .comment-form { display: flex; flex-direction: column; gap: 12px; background: white; padding: 20px; border-radius: 12px; border: 2px solid #e2e8f0; }
+                .comment-form textarea { width: 100%; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95em; resize: vertical; min-height: 80px; font-family: inherit; transition: border-color 0.2s; }
+                .comment-form textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+                .comment-form textarea:disabled { background: #f1f5f9; cursor: not-allowed; }
+                
+                .comment-form button { align-self: flex-end; background: #3b82f6; color: white; padding: 10px 24px; border: none; border-radius: 8px; font-size: 0.95em; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+                .comment-form button:hover:not(:disabled) { background: #2563eb; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+                .comment-form button:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; }
             `}</style>
         </div>
     );
