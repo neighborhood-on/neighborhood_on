@@ -123,6 +123,13 @@ export async function PATCH(
             { returnDocument: 'after' }
         );
 
+        if (!result) {
+            return NextResponse.json(
+                { message: "게시글을 찾을 수 없습니다." },
+                { status: 404 }
+            );
+        }
+
         return NextResponse.json({
             message: "추천이 완료되었습니다.",
             upvotes: result.upvotes
