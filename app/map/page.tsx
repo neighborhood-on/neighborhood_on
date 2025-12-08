@@ -170,21 +170,21 @@ const DISTRICT_META: Record<
   string,
   { id: string; displayName: string; summary: string; color: string }
 > = {
-  고양시덕양구: {
+  "고양시 덕양구": {
     id: "deogyang-gu",
     displayName: "덕양구",
     summary:
       "서울과 맞닿은 생활권, 화정·행신·삼송을 품은 북부 대표 구역입니다.",
     color: "#2563eb",
   },
-  고양시일산동구: {
+  "고양시 일산동구": {
     id: "ilsandong-gu",
     displayName: "일산동구",
     summary:
       "일산호수공원과 웨스턴돔·라페스타 상권이 펼쳐지는 문화 중심지입니다.",
     color: "#f97316",
   },
-  고양시일산서구: {
+  "고양시 일산서구": {
     id: "ilsanseo-gu",
     displayName: "일산서구",
     summary:
@@ -193,7 +193,7 @@ const DISTRICT_META: Record<
   },
 };
 
-const DISTRICT_ORDER = ["고양시덕양구", "고양시일산동구", "고양시일산서구"];
+const DISTRICT_ORDER = ["고양시 덕양구", "고양시 일산동구", "고양시 일산서구"];
 
 const MAP_CENTER = { lat: 37.6584, lng: 126.832 };
 const DEFAULT_STATUS_MESSAGE = "구를 클릭하면 행정동 지도로 전환됩니다.";
@@ -281,7 +281,12 @@ const parseNeighborhoodFeature = (
   if (!admNm || !admCd) return null;
   const segments = admNm.split(" ").filter(Boolean);
   if (segments.length < 3) return null;
-  const districtKey = segments[1];
+
+  let districtKey = segments[1];
+  if (districtKey === "고양시" && segments.length >= 4) {
+    districtKey = `${segments[1]} ${segments[2]}`;
+  }
+
   if (!DISTRICT_META[districtKey]) return null;
   const name = segments[segments.length - 1];
   const polygons = normalizeGeometry(feature);
@@ -727,8 +732,8 @@ const MapPage = () => {
     const loadGeoData = async () => {
       try {
         const [districtResponse, neighborhoodResponse] = await Promise.all([
-          fetch(GEOJSON_ENDPOINTS.districts),
-          fetch(GEOJSON_ENDPOINTS.neighborhoods),
+          fetch(`${GEOJSON_ENDPOINTS.districts}?v=${new Date().getTime()}`),
+          fetch(`${GEOJSON_ENDPOINTS.neighborhoods}?v=${new Date().getTime()}`),
         ]);
 
         if (!districtResponse.ok || !neighborhoodResponse.ok) {

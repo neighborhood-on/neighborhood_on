@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "code": "31104",
-        "name": "고양시일산서구",
+        "name": "고양시 일산서구",
         "name_eng": "Goyangsiilsanseogu",
         "base_year": "2013"
       },
@@ -61,7 +61,7 @@
       "type": "Feature",
       "properties": {
         "code": "31103",
-        "name": "고양시일산동구",
+        "name": "고양시 일산동구",
         "name_eng": "Goyangsiilsandonggu",
         "base_year": "2013"
       },
@@ -129,7 +129,7 @@
       "type": "Feature",
       "properties": {
         "code": "31101",
-        "name": "고양시덕양구",
+        "name": "고양시 덕양구",
         "name_eng": "Goyangsideogyanggu",
         "base_year": "2013"
       },
