@@ -23,7 +23,6 @@ const handler = NextAuth({
                     id: String(profile.id),
                     name: profile.kakao_account?.profile?.nickname ?? profile.properties?.nickname ?? "Unknown",
                     email: profile.kakao_account?.email,
-                    image: profile.kakao_account?.profile?.profile_image_url ?? profile.properties?.profile_image,
                     point: 0 // Initialize point for social login
                 }
             },

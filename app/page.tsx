@@ -1,6 +1,6 @@
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
-import BentoGrid from '@/components/BentoGrid'
+import FeatureShowcase from '@/components/FeatureShowcase'
 import TeamSection from '@/components/TeamSection'
 import Footer from '@/components/Footer'
 
@@ -11,7 +11,7 @@ export default function Home() {
 
       <main>
         <Hero />
-        <BentoGrid />
+        <FeatureShowcase />
         <TeamSection />
       </main>
 
