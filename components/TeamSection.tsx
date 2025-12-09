@@ -12,7 +12,7 @@ const teamMembers = [
         avatarColor: "#3b82f6",
         photoUrl: "/images/team/jjs.png", // Placeholder
         github: "https://github.com/Interludeal",
-        portfolio: "https://interludeal.com",
+        portfolio: "https://jbu-2025-2-personal.vercel.app/",
         skills: ["지역별 게시판 구축"]
     },
     {
@@ -40,7 +40,7 @@ const teamMembers = [
         avatarColor: "#f59e0b",
         photoUrl: "/images/team/kmg.png", // Placeholder
         github: "https://github.com/kkaturi14",
-        portfolio: "https://kkaturi14.com",
+        portfolio: "https://web-server-last-portfolio.vercel.app/",
         skills: ["PPT 작성", "DB 설계"]
     },
     {
@@ -68,7 +68,7 @@ const teamMembers = [
         avatarColor: "#06b6d4",
         photoUrl: "/images/team/jys.png", // Placeholder
         github: "https://github.com/oesp91",
-        portfolio: "https://oesp91.com",
+        portfolio: "https://wsvbp2.vercel.app/",
         skills: ["Map API 연결"]
     },
 ];
