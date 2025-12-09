@@ -27,7 +27,7 @@ export default function RankingBoard({ data }: RankingBoardProps) {
         <div className="bg-gray-50 min-h-screen flex flex-col font-sans">
             <Header />
 
-            <main className="flex-grow pt-24 pb-16 px-4">
+            <main className="flex-grow pt-36 pb-8 px-4">
                 {/* Header Section */}
                 <div className="max-w-4xl mx-auto text-center mb-12">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
@@ -187,7 +187,7 @@ export default function RankingBoard({ data }: RankingBoardProps) {
                     )}
 
                     {/* How to Earn Points Section */}
-                    <div className="mb-20 pt-[50px]">
+                    <div className="mb-10 pt-[50px]">
                         <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
                             🎁 포인트는 어떻게 모으나요?
                         </h2>

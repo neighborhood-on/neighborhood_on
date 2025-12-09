@@ -301,7 +301,7 @@ const BoardPage = () => {
                   <span>{userNickname}{isAuthenticated ? '님' : ''}</span>
                 </h2>
                 <div className="user-info-detail">
-                  <span className="info-text info-points-label">
+                  <span className="info-text info-points-label" style={{ whiteSpace: 'nowrap' }}>
                     <TrendingUp className="icon-trending" />
                     <span>{isAuthenticated ? '현재 포인트' : '로그인 필요'}</span>
                   </span>

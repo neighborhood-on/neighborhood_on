@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
 
 export default function Header() {
+    const pathname = usePathname()
+    const isHome = pathname === '/'
     const [isScrolled, setIsScrolled] = useState(false)
     const { data: session, status } = useSession()
     const [realTimePoint, setRealTimePoint] = useState<number | null>(null)
@@ -47,8 +50,12 @@ export default function Header() {
         return () => clearInterval(interval)
     }, [status])
 
+    // 홈이 아니면 항상 scroleld(흰배경, 검은글씨) 스타일 적용, 홈이면 스크롤 상태에 따라 변경
+    const headerClass = !isHome || isScrolled ? 'scrolled' : 'transparent'
+    const textColor = !isHome || isScrolled ? '#333' : '#fff'
+
     return (
-        <header className={`header ${isScrolled ? 'scrolled' : 'transparent'}`}>
+        <header className={`header ${headerClass}`}>
             <div className="header-content">
                 <div className="logo">
                     <Link href="/">
@@ -67,7 +74,7 @@ export default function Header() {
                 <div className="auth-buttons">
                     {session ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <span style={{ fontWeight: 'bold', color: isScrolled ? '#333' : '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontWeight: 'bold', color: textColor, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <span>{session.user?.name}님</span>
                                 <Link
                                     href="/exchange"

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header'; // 공통 헤더 import
+import Footer from '@/components/Footer';
 
 // Icons
 const Coins = (props: any) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="6" /><path d="M18.09 10.37A6 6 0 1 1 10.34 18" /><path d="M7 6h1v4" /><path d="m16.71 13.88.7.71-2.82 2.82" /></svg>;
@@ -293,6 +294,8 @@ const ExchangePage = () => {
                     </div>
                 </main>
 
+                <Footer />
+
                 {/* Success Modal */}
                 {isSuccess && (
                     <div className="modal-overlay">
@@ -324,13 +327,13 @@ const ExchangePage = () => {
                     display: flex;
                     flex-direction: column;
                     font-family: 'Pretendard', sans-serif;
-                    padding-top: 60px; /* 헤더 높이만큼 여백 확보 */
+                    padding-top: 120px; /* 헤더 높이만큼 여백 확보 + 추가 여백 */
                 }
                 /* exchange-nav 스타일 제거됨 */
 
                 .exchange-main {
                     flex: 1;
-                    padding: 40px 20px;
+                    padding: 0 20px 40px 20px; /* top padding removed (handled by layout), bottom padding adjusted */
                 }
                 .content-container {
                     max-width: 1000px;
