@@ -300,7 +300,7 @@ const BoardPage = () => {
                   <User className="icon-user" />
                   <span>{userNickname}{isAuthenticated ? '님' : ''}</span>
                 </h2>
-                <div className="user-info-detail" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="user-info-detail" style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', width: '100%' }}>
                   <div className="info-text info-points-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#4b5563', fontSize: '0.95rem', fontWeight: '600' }}>
                     <TrendingUp className="icon-trending" width="18" height="18" />
                     <span>{isAuthenticated ? '현재 포인트' : '로그인 필요'}</span>
