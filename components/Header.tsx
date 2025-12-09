@@ -41,9 +41,9 @@ export default function Header() {
         }
 
         fetchUserPoint()
-        
+
         const interval = setInterval(fetchUserPoint, 10000)
-        
+
         return () => clearInterval(interval)
     }, [status])
 
@@ -67,8 +67,28 @@ export default function Header() {
                 <div className="auth-buttons">
                     {session ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <span style={{ fontWeight: 'bold', color: isScrolled ? '#333' : '#fff' }}>
-                                {session.user?.name}님 ({realTimePoint !== null ? realTimePoint : (session.user?.point ?? 0)} P) 환영합니다!
+                            <span style={{ fontWeight: 'bold', color: isScrolled ? '#333' : '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span>{session.user?.name}님</span>
+                                <Link
+                                    href="/exchange"
+                                    style={{
+                                        backgroundColor: '#eab308',
+                                        padding: '4px 10px',
+                                        borderRadius: '12px',
+                                        color: '#fff',
+                                        fontSize: '0.9em',
+                                        textDecoration: 'none',
+                                        transition: 'transform 0.2s',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        cursor: 'pointer'
+                                    }}
+                                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                    title="포인트 교환소 바로가기"
+                                >
+                                    💰 {realTimePoint !== null ? realTimePoint.toLocaleString() : (session.user?.point ?? 0).toLocaleString()} P
+                                </Link>
                             </span>
                             <button
                                 onClick={() => signOut()}

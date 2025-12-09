@@ -24,9 +24,9 @@ const features = [
         label: "Point System",
         headline: <>활동할수록 쌓이는 <span className="text-yellow-600 font-extrabold">알찬 포인트 혜택</span></>,
         desc: "당신의 지식과 경험이 이웃에게 도움이 되고, 기분 좋은 보상으로 돌아옵니다",
-        image: "/images/map-mockup.png",
-        link: null,
-        buttonText: null
+        image: "/images/point-exchange.png",
+        link: "/exchange",
+        buttonText: "포인트 교환 체험하기"
     },
     {
         label: "Monthly Event",

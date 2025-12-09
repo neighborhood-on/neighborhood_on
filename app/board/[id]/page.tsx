@@ -305,9 +305,28 @@ const BoardPage = () => {
                     <TrendingUp className="icon-trending" />
                     <span>{isAuthenticated ? '현재 포인트' : '로그인 필요'}</span>
                   </span>
-                  <span className="info-points-value">
-                    {isAuthenticated ? `${userPoints.toLocaleString()} P` : '--- P'}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: '4px' }}>
+                    <span className="info-points-value">
+                      {isAuthenticated ? `${userPoints.toLocaleString()} P` : '--- P'}
+                    </span>
+                    {isAuthenticated && (
+                      <button
+                        onClick={() => router.push('/exchange')}
+                        style={{
+                          background: '#3b82f6',
+                          border: 'none',
+                          borderRadius: '12px',
+                          color: 'white',
+                          fontSize: '11px',
+                          fontWeight: 'bold',
+                          padding: '4px 8px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        교환하기
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
