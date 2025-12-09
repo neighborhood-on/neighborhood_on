@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth"; // authOptions 경로가 맞는지 확인 필요, 보통 app/api/auth/[...nextauth]/route.ts 근처나 lib에 있음. 
-// User type 정의가 필요할 수 있음.
+import { authOptions } from "@/lib/auth";
 
 export async function POST(request: Request) {
     const session = await getServerSession(authOptions);
