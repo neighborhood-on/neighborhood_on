@@ -300,13 +300,13 @@ const BoardPage = () => {
                   <User className="icon-user" />
                   <span>{userNickname}{isAuthenticated ? '님' : ''}</span>
                 </h2>
-                <div className="user-info-detail">
-                  <span className="info-text info-points-label" style={{ whiteSpace: 'nowrap' }}>
-                    <TrendingUp className="icon-trending" />
+                <div className="user-info-detail" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div className="info-text info-points-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#4b5563', fontSize: '0.95rem', fontWeight: '600' }}>
+                    <TrendingUp className="icon-trending" width="18" height="18" />
                     <span>{isAuthenticated ? '현재 포인트' : '로그인 필요'}</span>
-                  </span>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: '4px' }}>
-                    <span className="info-points-value">
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                    <span className="info-points-value" style={{ fontSize: '1.5rem', fontWeight: '800', color: '#059669' }}>
                       {isAuthenticated ? `${userPoints.toLocaleString()} P` : '--- P'}
                     </span>
                     {isAuthenticated && (
@@ -315,13 +315,16 @@ const BoardPage = () => {
                         style={{
                           background: '#3b82f6',
                           border: 'none',
-                          borderRadius: '12px',
+                          borderRadius: '8px',
                           color: 'white',
-                          fontSize: '11px',
-                          fontWeight: 'bold',
-                          padding: '4px 8px',
-                          cursor: 'pointer'
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          padding: '6px 12px',
+                          cursor: 'pointer',
+                          transition: 'background 0.2s'
                         }}
+                        onMouseOver={(e) => e.currentTarget.style.background = '#2563eb'}
+                        onMouseOut={(e) => e.currentTarget.style.background = '#3b82f6'}
                       >
                         교환하기
                       </button>
